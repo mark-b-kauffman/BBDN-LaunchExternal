@@ -1,6 +1,6 @@
-# BBDN-UEF-Python
+# BBDN-LaunchExternal
 
-This project is set up to demonstrate the use of the Ultra Extension Framework with LTI 1.3 in Python.
+This project is set up to demonstrate the use of LTI 1.3 in Python to replace launch_external.jsp functionality.
 
 To configure:
 
