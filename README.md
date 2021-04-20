@@ -44,3 +44,13 @@ contentIds = '_3127_1'
 ## To Run
 
 First run `pip install -r requirements.txt`  and then `python app.py` or if you are using heroku, just check in the code to your dyno.
+
+OR
+Use the included Dockerfile and the following. The assumption is that you have Docker desktop an ngrok on your development system.
+
+Start your ngrok tunnel. Example:
+$ ngrok http -region=us -hostname=launchexternal.ngrok.io 5000
+Build the Docker image. Note the period at the end.
+$ docker build -t launch-external:0.1 .
+Now run it. From the terminal, type:
+$ docker run -p 5000:5000 --name LaunchExternal launch-external:0.1

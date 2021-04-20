@@ -181,7 +181,7 @@ def launch():
         'response_type' : 'code',
         'client_id' : Config.config['learn_rest_key'],
         'scope' : '*',
-        'state' : str(uuid.uuid4())
+        'state' : str(uuid.uuid4()) + '&launch_url=https://www.microsoft.com'
     }
 
     encodedParams = urllib.parse.urlencode(params)
@@ -197,7 +197,12 @@ def authcode():
     
     authcode = request.args.get('code', '')
     state = request.args.get('state', '')
-    print (authcode, flush=True)
+    launch_url = state.split("&launch_url=",1)[1]
+
+    print ("authcode: " + authcode, flush=True)
+    print ("state: " + state, flush=True)
+    print ("launch_url: " + launch_url, flush=True)
+    
     
     restAuthController = RestAuthController.RestAuthController(authcode)
     restAuthController.setToken()
@@ -206,7 +211,7 @@ def authcode():
 
     login_user(User(uuid))
 
-    return render_template('external.html', launch_url="https://www.microsoft.com")
+    return render_template('external.html', launch_url=launch_url)
 
 if __name__ == '__main__':
     restAuthController = None
