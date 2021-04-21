@@ -167,6 +167,7 @@ def launch():
     message_launch = ExtendedFlaskMessageLaunch(flask_request, tool_conf, launch_data_storage=launch_data_storage)
     message_launch_data = message_launch.get_launch_data()
     pprint.pprint(message_launch_data)
+
     tpl_kwargs = {
         'page_title': PAGE_TITLE,
         'is_deep_link_launch': message_launch.is_deep_link_launch(),
@@ -189,7 +190,9 @@ def launch():
     """
 
     learn_url = message_launch_data['https://purl.imsglobal.org/spec/lti/claim/tool_platform']['url'].rstrip('/')
-    state = str(uuid.uuid4()) + '&launch_url=https://www.microsoft.com'
+    # MUST include a custom parameter like 'external_url=https://www.foodies.com' in the custom params
+    external_url = message_launch_data['https://purl.imsglobal.org/spec/lti/claim/custom']['external_url'].rstrip('/')
+    state = str(uuid.uuid4()) + f'&launch_url={external_url}'
     message_bytes = state.encode('ascii')
     base64_bytes = base64.b64encode(message_bytes)
     base64_message = base64_bytes.decode('ascii')
