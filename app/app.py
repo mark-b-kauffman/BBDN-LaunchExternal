@@ -5,6 +5,7 @@ import uuid
 import urllib
 import webbrowser
 import json
+import base64
 
 from distutils import util
 
@@ -174,14 +175,31 @@ def launch():
         'curr_user_name': message_launch_data.get('name', '')
     }
     
+    """ 
+    We could do the launch to the external page here. The following which does the 3LO with REST APIs
+    back to the Learn system is not necessary. It's an artifact of project this one was leveraged from.
+    We left it here for the most part to demonstrate how one can pass data through the 3LO process
+    using the state parameter. The state is an opaque value that doesn't get modified by the 
+    developer portal or by Learn. We take the external URL that will be launched to and include it as
+    a portion of the state to be pulled out on the other side of 3LO. It's the only way across. 
+    Attempts to pass the data by adding an additional parameter to the request for a authroization code
+    will fail because those will be dropped. I.E setting your redirect_uri to .../authcode/?launch_url=URL
+    does not work.
+    https://stackabuse.com/encoding-and-decoding-base64-strings-in-python/
+    """
+
     learn_url = message_launch_data['https://purl.imsglobal.org/spec/lti/claim/tool_platform']['url'].rstrip('/')
+    state = str(uuid.uuid4()) + '&launch_url=https://www.microsoft.com'
+    message_bytes = state.encode('ascii')
+    base64_bytes = base64.b64encode(message_bytes)
+    base64_message = base64_bytes.decode('ascii')
 
     params = {
         'redirect_uri' : Config.config['app_url'] + '/authcode/',
         'response_type' : 'code',
         'client_id' : Config.config['learn_rest_key'],
         'scope' : '*',
-        'state' : str(uuid.uuid4()) + '&launch_url=https://www.microsoft.com'
+        'state' : base64_message
     }
 
     encodedParams = urllib.parse.urlencode(params)
@@ -196,10 +214,14 @@ def launch():
 def authcode():
     
     authcode = request.args.get('code', '')
-    state = request.args.get('state', '')
+    base64_message = request.args.get('state', '')
+    base64_bytes = base64_message.encode('ascii')
+    message_bytes = base64.b64decode(base64_bytes)
+    state = message_bytes.decode('ascii')
     launch_url = state.split("&launch_url=",1)[1]
 
     print ("authcode: " + authcode, flush=True)
+    print ("base64_message: " + base64_message, flush=True)
     print ("state: " + state, flush=True)
     print ("launch_url: " + launch_url, flush=True)
     
