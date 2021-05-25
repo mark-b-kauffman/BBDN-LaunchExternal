@@ -56,11 +56,13 @@ $ docker run -p 5000:5000 --name LaunchExternal launch-external:0.1
 Register the LTI 1.3 tool with your client_id.
 Create a "Course content tool" managed placment for the URL you want to launch to with a custom parameter external_url= to where you want to launch.
 Example:
+```
     Label: Foodies With User Name
     Handle: foodieswithusername
     Course content tool
     Target Link URI: https://launchexternal.ngrok.io/launch/
     Custom Parameters: external_url=https://www.foodies.com?user%3D@X@user.id@X@
+```
 
 Note that the url will be escaped by Learn to be:external_url=https://www.foodies.com?user=@X@user.id@X@
 You need to input the = sign after user as %3D, because Learn will not accept an = there as it thinks that is another custom parameter.
