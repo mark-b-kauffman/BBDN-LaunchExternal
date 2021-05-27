@@ -50,7 +50,7 @@ $ ngrok http -region=us -hostname=launchexternal.ngrok.io 5000
 Build the Docker image. Note the period at the end.
 $ docker build -t launch-external:0.1 .
 Now run it. From the terminal, type:
-$ docker run -p 5000:5000 --name LaunchExternal launch-external:0.1
+$ docker run -p 5000:5000 --rm --name LaunchExternal launch-external:0.1
 
 ## On your Learn server
 Register the LTI 1.3 tool with your client_id.
